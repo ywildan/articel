@@ -3,7 +3,7 @@ import { getPublishedArticles, getCategories, getPopularTags } from "@/lib/queri
 import Hero from "@/components/Hero";
 import ArticleCard from "@/components/ArticleCard";
 import EmptyState from "@/components/EmptyState";
-import { formatDate, readingTime } from "@/lib/utils";
+import { formatDate, readingMinutes, readingTime } from "@/lib/utils";
 import { FileText } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -47,7 +47,7 @@ export default async function HomePage() {
                 <div className="mt-5 flex items-center gap-3 font-mono text-[11px] uppercase tracking-wide text-muted">
                   <span>{formatDate(lead.created_at)}</span>
                   <span aria-hidden>·</span>
-                  <span>{readingTime(lead.excerpt ?? lead.title)} menit baca</span>
+                  <span>{typeof lead.word_count === "number" ? readingMinutes(lead.word_count) : readingTime(lead.excerpt ?? lead.title)} menit baca</span>
                 </div>
               </Link>
 

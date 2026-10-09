@@ -1,11 +1,14 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import SearchClient from "@/components/SearchClient";
+import { getPublishedArticles } from "@/lib/queries";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Cari" };
 
-export default function SearchPage() {
+export default async function SearchPage() {
+  const articles = await getPublishedArticles();
+
   return (
     <Suspense
       fallback={
@@ -14,7 +17,7 @@ export default function SearchPage() {
         </div>
       }
     >
-      <SearchClient />
+      <SearchClient initialArticles={articles} />
     </Suspense>
   );
 }

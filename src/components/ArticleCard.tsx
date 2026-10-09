@@ -1,9 +1,12 @@
 import Link from "next/link";
-import { formatDate, readingTime } from "@/lib/utils";
+import { formatDate, readingMinutes, readingTime } from "@/lib/utils";
 import type { ArticleRow } from "@/lib/db";
 
 export default function ArticleCard({ article }: { article: ArticleRow }) {
-  const minutes = readingTime(article.excerpt ?? article.title);
+  const minutes =
+    typeof article.word_count === "number"
+      ? readingMinutes(article.word_count)
+      : readingTime(article.excerpt ?? article.title);
 
   return (
     <article className="group flex h-full flex-col border border-line bg-surface transition-colors duration-150 hover:border-accent">

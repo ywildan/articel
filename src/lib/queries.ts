@@ -10,7 +10,8 @@ export async function getPublishedArticles(opts?: {
   const limit = opts?.limit ?? 100;
 
   const rows = await sql`
-    SELECT id, slug, title, excerpt, cover_image, category, tags, status, views, created_at, updated_at
+    SELECT id, slug, title, excerpt, cover_image, category, tags, status, views, created_at, updated_at,
+      CASE WHEN trim(content) = '' THEN 0 ELSE COALESCE(array_length(regexp_split_to_array(trim(content), '\s+'), 1), 0) END::int AS word_count
     FROM articles
     WHERE status = 'published'
       AND (${category} = '' OR category = ${category})
@@ -24,7 +25,8 @@ export async function getPublishedArticles(opts?: {
 export async function searchArticles(q: string): Promise<ArticleRow[]> {
   const term = `%${q.toLowerCase()}%`;
   const rows = await sql`
-    SELECT id, slug, title, excerpt, cover_image, category, tags, status, views, created_at, updated_at
+    SELECT id, slug, title, excerpt, cover_image, category, tags, status, views, created_at, updated_at,
+      CASE WHEN trim(content) = '' THEN 0 ELSE COALESCE(array_length(regexp_split_to_array(trim(content), '\s+'), 1), 0) END::int AS word_count
     FROM articles
     WHERE status = 'published'
       AND (
@@ -89,7 +91,8 @@ export async function getApprovedComments(
 
 export async function getAllArticles(): Promise<ArticleRow[]> {
   const rows = await sql`
-    SELECT id, slug, title, excerpt, cover_image, category, tags, status, views, created_at, updated_at
+    SELECT id, slug, title, excerpt, cover_image, category, tags, status, views, created_at, updated_at,
+      CASE WHEN trim(content) = '' THEN 0 ELSE COALESCE(array_length(regexp_split_to_array(trim(content), '\s+'), 1), 0) END::int AS word_count
     FROM articles
     ORDER BY created_at DESC
   `;

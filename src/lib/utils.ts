@@ -16,9 +16,13 @@ export function formatDate(input: string | Date): string {
   }).format(date);
 }
 
+export function readingMinutes(wordCount: number): number {
+  return Math.max(1, Math.round(wordCount / 200));
+}
+
 export function readingTime(content: string): number {
-  const words = content.trim().split(/\s+/).length;
-  return Math.max(1, Math.round(words / 200));
+  const words = content.trim() ? content.trim().split(/\s+/).length : 0;
+  return readingMinutes(words);
 }
 
 export function parseTags(raw: string | string[] | undefined): string[] {

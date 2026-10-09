@@ -39,4 +39,7 @@ export type Comment = {
   created_at: string;
 };
 
-export type ArticleRow = Omit<Article, "content">;
+export type ArticleRow = Omit<Article, "content"> & {
+  /** Jumlah kata dari `content`, dihitung di SQL — untuk reading time tanpa mengirim isi artikel. */
+  word_count: number;
+};
