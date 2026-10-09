@@ -8,21 +8,6 @@ export default function ArticleCard({ article }: { article: ArticleRow }) {
   return (
     <article className="group flex h-full flex-col border border-line bg-surface transition-colors duration-150 hover:border-accent">
       <Link href={`/artikel/${article.slug}`} className="flex h-full flex-col">
-        <div className="relative aspect-[16/9] overflow-hidden border-b border-line bg-accent-soft">
-          {article.cover_image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={article.cover_image}
-              alt=""
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <span className="absolute left-4 top-3 font-display text-6xl font-semibold text-accent/30">
-              {article.title.charAt(0).toUpperCase()}
-            </span>
-          )}
-        </div>
-
         <div className="flex flex-1 flex-col p-5">
           <span className="eyebrow">{article.category}</span>
           <h3 className="mt-2 font-display text-xl font-semibold leading-snug tracking-tight transition-colors group-hover:text-accent">
