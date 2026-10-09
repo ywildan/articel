@@ -57,7 +57,7 @@ export default async function ArticlePage({ params }: Props) {
 
       <Link
         href={`/kategori/${encodeURIComponent(article.category)}`}
-        className="eyebrow mt-8 inline-block text-accent"
+        className="eyebrow mt-8 block w-fit text-accent"
       >
         {article.category}
       </Link>
