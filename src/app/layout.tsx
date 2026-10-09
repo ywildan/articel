@@ -1,23 +1,40 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Fraunces, Newsreader, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const display = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const body = Newsreader({
+  subsets: ["latin"],
+  variable: "--font-body",
+  display: "swap",
+});
+
+const mono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: {
-    default: "Artikel — Baca & Kelola Tulisan",
-    template: "%s · Artikel",
+    default: "Kabar — Catatan dan Artikel",
+    template: "%s · Kabar",
   },
   description:
-    "Platform artikel modern dengan dashboard admin lengkap. Baca, cari, dan komentari tulisan favoritmu.",
+    "Kumpulan tulisan panjang: catatan, esai, dan laporan. Baca, telusuri per kategori, dan tinggalkan komentar.",
 };
 
 const antiFlash = `
-(function(){try{var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}var r=document.documentElement;r.classList.toggle('dark',t==='dark');r.style.colorScheme=t;}catch(e){}})();
+(function(){try{var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}var r=document.documentElement;r.classList.toggle('dark',t==='dark');r.style.colorScheme=t;}catch(e){}})();
 `;
 
 export default function RootLayout({
@@ -26,33 +43,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" suppressHydrationWarning>
+    <html
+      lang="id"
+      className={`${display.variable} ${body.variable} ${mono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: antiFlash }} />
       </head>
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className="font-sans antialiased">
         <ThemeProvider>
-          <div className="relative flex min-h-screen flex-col overflow-x-hidden">
-            <BackgroundGlow />
+          <div className="flex min-h-screen flex-col">
             <Navbar />
-            <main className="relative z-10 flex-1">{children}</main>
+            <main className="flex-1">{children}</main>
             <Footer />
           </div>
         </ThemeProvider>
       </body>
     </html>
-  );
-}
-
-function BackgroundGlow() {
-  return (
-    <div
-      aria-hidden
-      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
-    >
-      <div className="absolute -top-40 -left-32 h-96 w-96 rounded-full bg-brand-500/20 blur-[120px] animate-float" />
-      <div className="absolute top-1/3 -right-32 h-96 w-96 rounded-full bg-fuchsia-500/15 blur-[120px] animate-float [animation-delay:2s]" />
-      <div className="absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-cyan-400/10 blur-[120px] animate-float [animation-delay:4s]" />
-    </div>
   );
 }

@@ -8,12 +8,13 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="container-x pt-28 pb-16">
-      <div className="mb-6">
-        <h1 className="text-2xl font-black tracking-tight sm:text-3xl">
-          Dashboard <span className="gradient-text">Admin</span>
+    <div className="container-x pt-10 pb-16">
+      <div className="mb-8">
+        <p className="eyebrow">Admin</p>
+        <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight">
+          Dashboard
         </h1>
-        <p className="text-sm text-black/60 dark:text-white/60">
+        <p className="mt-2 text-sm text-muted">
           Kelola artikel, kategori, dan komentar pembaca.
         </p>
       </div>

@@ -11,7 +11,7 @@ import Markdown from "@/components/Markdown";
 import ShareButtons from "@/components/ShareButtons";
 import CommentSection from "@/components/CommentSection";
 import { formatDate, readingTime } from "@/lib/utils";
-import { Clock, Eye, Folder, Tag as TagIcon, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -47,70 +47,63 @@ export default async function ArticlePage({ params }: Props) {
   const url = `${proto}://${host}/artikel/${article.slug}`;
 
   return (
-    <article className="container-x max-w-3xl pt-28 pb-10">
+    <article className="container-x max-w-3xl pt-10 pb-16">
       <Link
         href="/"
-        className="btn-ghost -ml-4 mb-6 inline-flex text-sm text-black/60 dark:text-white/60"
+        className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-eyebrow text-muted transition-colors hover:text-accent"
       >
-        <ArrowLeft className="h-4 w-4" /> Kembali
+        <ArrowLeft className="h-3.5 w-3.5" /> Kembali
       </Link>
 
       <Link
         href={`/kategori/${encodeURIComponent(article.category)}`}
-        className="chip mb-4 inline-flex"
+        className="eyebrow mt-8 inline-block text-accent"
       >
-        <Folder className="h-3 w-3" /> {article.category}
+        {article.category}
       </Link>
 
-      <h1 className="text-3xl font-black leading-tight tracking-tight sm:text-5xl">
+      <h1 className="mt-3 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
         {article.title}
       </h1>
 
       {article.excerpt && (
-        <p className="mt-4 text-lg text-black/60 dark:text-white/60">
+        <p className="mt-5 text-xl leading-relaxed text-muted">
           {article.excerpt}
         </p>
       )}
 
-      <div className="mt-6 flex flex-wrap items-center gap-4 border-y border-black/5 dark:border-white/10 py-4 text-xs text-black/50 dark:text-white/50">
+      <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-2 border-y border-line py-3 font-mono text-[11px] uppercase tracking-wide text-muted">
         <span>{formatDate(article.created_at)}</span>
-        <span className="inline-flex items-center gap-1">
-          <Clock className="h-3.5 w-3.5" /> {readingTime(article.content)} menit baca
-        </span>
-        <span className="inline-flex items-center gap-1">
-          <Eye className="h-3.5 w-3.5" /> {article.views} views
-        </span>
+        <span aria-hidden>·</span>
+        <span>{readingTime(article.content)} menit baca</span>
+        <span aria-hidden>·</span>
+        <span>{article.views} views</span>
       </div>
 
       {article.cover_image && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={article.cover_image}
-          alt={article.title}
-          className="mt-8 aspect-[16/9] w-full rounded-3xl object-cover"
+          alt=""
+          className="mt-8 aspect-[16/9] w-full border border-line object-cover"
         />
       )}
 
-      <div className="mt-8">
+      <div className="mt-10">
         <Markdown content={article.content} />
       </div>
 
       {article.tags?.length > 0 && (
-        <div className="mt-10 flex flex-wrap items-center gap-2">
-          <TagIcon className="h-4 w-4 text-brand-500" />
+        <div className="mt-12 flex flex-wrap items-center gap-2">
           {article.tags.map((t) => (
-            <Link
-              key={t}
-              href={`/tag/${encodeURIComponent(t)}`}
-              className="rounded-full bg-black/5 dark:bg-white/10 px-3 py-1 text-xs transition-colors hover:bg-brand-500/15 hover:text-brand-500"
-            >
+            <Link key={t} href={`/tag/${encodeURIComponent(t)}`} className="tag-mark">
               #{t}
             </Link>
           ))}
         </div>
       )}
 
-      <div className="mt-8 border-t border-black/5 dark:border-white/10 pt-6">
+      <div className="mt-10 border-t border-line pt-6">
         <ShareButtons url={url} title={article.title} />
       </div>
 

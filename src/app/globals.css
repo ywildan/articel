@@ -2,18 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Palet "Kabar" — kertas hangat, tinta pekat, satu aksen teal. */
 :root {
-  --background: 250 250 252;
-  --foreground: 17 20 30;
+  --paper: 246 245 241;
+  --surface: 253 252 250;
+  --ink: 24 24 22;
+  --muted: 96 94 85;
+  --line: 221 218 208;
+  --accent: 31 95 85;
+  --accent-ink: 250 250 248;
+  --accent-soft: 228 237 233;
+  --danger: 154 46 39;
+  color-scheme: light;
 }
 
 .dark {
-  --background: 8 10 18;
-  --foreground: 235 238 245;
+  --paper: 18 19 17;
+  --surface: 27 28 25;
+  --ink: 237 235 228;
+  --muted: 156 154 144;
+  --line: 45 46 41;
+  --accent: 116 181 165;
+  --accent-ink: 12 20 18;
+  --accent-soft: 24 50 44;
+  --danger: 224 122 111;
+  color-scheme: dark;
 }
 
 * {
-  border-color: rgb(var(--foreground) / 0.08);
+  border-color: rgb(var(--line));
 }
 
 html {
@@ -21,81 +38,116 @@ html {
 }
 
 body {
-  background-color: rgb(var(--background));
-  color: rgb(var(--foreground));
-  transition: background-color 0.4s ease, color 0.4s ease;
+  background-color: rgb(var(--paper));
+  color: rgb(var(--ink));
+  font-feature-settings: "kern", "liga";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Scrollbar */
+::selection {
+  background: rgb(var(--accent) / 0.22);
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgb(var(--paper));
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #598bff, #3366ff);
-  border-radius: 999px;
+  background: rgb(var(--line));
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--muted) / 0.5);
 }
 
 @layer components {
   .container-x {
-    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
   }
 
-  .glass {
-    @apply backdrop-blur-xl bg-white/70 dark:bg-white/5 border border-white/40 dark:border-white/10;
+  /* Garis pemisah ala koran */
+  .rule {
+    @apply border-t border-line;
   }
 
-  .card-hover {
-    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/10;
+  /* Label mono huruf kapital untuk eyebrow, meta, tanggal */
+  .eyebrow {
+    @apply font-mono text-[11px] uppercase tracking-eyebrow text-muted;
   }
 
-  .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 py-2.5 font-medium text-white
-      transition-all duration-200 hover:bg-brand-500 hover:shadow-lg hover:shadow-brand-500/30 active:scale-95
-      disabled:opacity-50 disabled:pointer-events-none;
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 border border-ink bg-ink px-5 py-2
+      font-mono text-xs uppercase tracking-eyebrow text-paper
+      transition-colors duration-150 hover:bg-accent hover:border-accent hover:text-accent-ink
+      focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent
+      disabled:pointer-events-none disabled:opacity-40;
   }
 
-  .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 font-medium
-      transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/10 active:scale-95;
+  .btn-quiet {
+    @apply inline-flex items-center justify-center gap-2 border border-line px-4 py-2
+      font-mono text-xs uppercase tracking-eyebrow text-ink
+      transition-colors duration-150 hover:border-ink hover:bg-surface
+      focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent
+      disabled:pointer-events-none disabled:opacity-40;
   }
 
   .input {
-    @apply w-full rounded-xl border border-black/10 dark:border-white/10 bg-white/60 dark:bg-white/5
-      px-4 py-2.5 text-sm outline-none transition-all duration-200
-      focus:border-brand-500 focus:ring-4 focus:ring-brand-500/20;
+    @apply w-full border border-line bg-surface px-3 py-2 text-sm text-ink
+      outline-none transition-colors duration-150 placeholder:text-muted/60
+      focus:border-accent;
   }
 
-  .chip {
-    @apply inline-flex items-center gap-1 rounded-full bg-brand-500/10 px-3 py-1 text-xs font-medium text-brand-600 dark:text-brand-300
-      transition-colors hover:bg-brand-500/20;
+  .link {
+    @apply text-accent underline decoration-accent/40 underline-offset-4 transition-colors hover:decoration-accent;
+  }
+
+  /* Penanda kategori/tag kecil */
+  .tag-mark {
+    @apply border border-line px-2.5 py-1 font-mono text-[11px] uppercase tracking-wide text-muted transition-colors hover:border-accent hover:text-accent;
+  }
+
+  .surface {
+    @apply border border-line bg-surface;
   }
 }
 
-.gradient-text {
-  background: linear-gradient(90deg, #3366ff, #a855f7, #ec4899, #3366ff);
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: gradient-x 6s ease infinite;
+/* Prosa artikel — ukuran baca nyaman, tautan aksen */
+.prose-kabar {
+  --tw-prose-body: rgb(var(--ink));
+  --tw-prose-headings: rgb(var(--ink));
+  --tw-prose-lead: rgb(var(--muted));
+  --tw-prose-links: rgb(var(--accent));
+  --tw-prose-bold: rgb(var(--ink));
+  --tw-prose-counters: rgb(var(--muted));
+  --tw-prose-bullets: rgb(var(--accent));
+  --tw-prose-hr: rgb(var(--line));
+  --tw-prose-quotes: rgb(var(--muted));
+  --tw-prose-quote-borders: rgb(var(--accent));
+  --tw-prose-captions: rgb(var(--muted));
+  --tw-prose-code: rgb(var(--ink));
+  --tw-prose-pre-code: rgb(237 235 228);
+  --tw-prose-pre-bg: rgb(24 24 22);
+  --tw-prose-th-borders: rgb(var(--line));
+  --tw-prose-td-borders: rgb(var(--line));
 }
 
-/* Markdown / prose tuning */
-.prose a {
-  @apply text-brand-500 underline decoration-brand-500/40 underline-offset-2 transition-colors hover:decoration-brand-500;
-}
-.prose img {
-  @apply rounded-2xl;
-}
-.dark .prose-invert {
-  --tw-prose-body: rgb(226 230 240);
+.prose-kabar :where(blockquote):not(:where(.not-prose *)) {
+  font-style: normal;
+  border-left-width: 3px;
 }
 
-/* Selection */
-::selection {
-  background: rgb(51 102 255 / 0.3);
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
 }

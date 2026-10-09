@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Send, Loader2, CheckCircle2 } from "lucide-react";
+import { Loader2, CheckCircle2, Send } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import type { Comment } from "@/lib/db";
 
@@ -46,49 +45,45 @@ export default function CommentSection({
   }
 
   return (
-    <section className="mt-14">
-      <h2 className="mb-6 flex items-center gap-2 text-xl font-bold">
-        <MessageCircle className="h-5 w-5 text-brand-500" />
-        Komentar ({comments.length})
+    <section className="mt-16 border-t border-line pt-10">
+      <h2 className="font-display text-2xl font-semibold tracking-tight">
+        Komentar <span className="text-muted">({comments.length})</span>
       </h2>
 
-      <div className="space-y-4">
-        <AnimatePresence initial={false}>
-          {comments.map((c) => (
-            <motion.div
-              key={c.id}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="glass rounded-2xl p-4"
-            >
-              <div className="flex items-center gap-3">
-                <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-brand-500 to-fuchsia-500 text-sm font-bold text-white">
+      <div className="mt-6">
+        {comments.length === 0 ? (
+          <p className="border border-dashed border-line px-4 py-8 text-center text-sm text-muted">
+            Belum ada komentar. Tulis tanggapan pertama di bawah.
+          </p>
+        ) : (
+          <ul className="divide-y divide-line">
+            {comments.map((c) => (
+              <li key={c.id} className="flex gap-4 py-5">
+                <span className="grid h-9 w-9 shrink-0 place-items-center border border-line font-mono text-sm text-accent">
                   {c.author.charAt(0).toUpperCase()}
-                </div>
+                </span>
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold">{c.author}</p>
-                  <p className="text-[11px] text-black/50 dark:text-white/50">
-                    {formatDate(c.created_at)}
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <span className="text-sm font-semibold">{c.author}</span>
+                    <span className="font-mono text-[11px] uppercase tracking-wide text-muted">
+                      {formatDate(c.created_at)}
+                    </span>
+                  </div>
+                  <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-ink/85">
+                    {c.content}
                   </p>
                 </div>
-              </div>
-              <p className="mt-3 whitespace-pre-wrap text-sm text-black/70 dark:text-white/70">
-                {c.content}
-              </p>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-
-        {comments.length === 0 && (
-          <p className="rounded-2xl border border-dashed border-black/10 dark:border-white/10 p-6 text-center text-sm text-black/50 dark:text-white/50">
-            Belum ada komentar. Jadilah yang pertama!
-          </p>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
 
-      <form onSubmit={submit} className="glass mt-8 rounded-2xl p-5">
-        <h3 className="mb-4 font-semibold">Tinggalkan komentar</h3>
-        <div className="grid gap-3 sm:grid-cols-2">
+      <form onSubmit={submit} className="mt-10 border border-line bg-surface p-5">
+        <h3 className="font-display text-lg font-semibold tracking-tight">
+          Tinggalkan komentar
+        </h3>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <input
             required
             value={author}
@@ -110,23 +105,22 @@ export default function CommentSection({
           required
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder="Tulis komentarmu..."
+          placeholder="Tulis komentarmu…"
           rows={4}
           maxLength={2000}
           className="input mt-3 resize-y"
         />
 
-        <div className="mt-3 flex items-center justify-between gap-3">
+        <div className="mt-4 flex items-center justify-between gap-3">
           <p
             className={`text-xs ${
-              status === "error"
-                ? "text-red-500"
-                : "text-black/50 dark:text-white/50"
+              status === "error" ? "text-danger" : "text-muted"
             }`}
+            role={status === "error" ? "alert" : undefined}
           >
             {message}
           </p>
-          <button type="submit" disabled={status === "loading"} className="btn-primary shrink-0">
+          <button type="submit" disabled={status === "loading"} className="btn shrink-0">
             {status === "loading" ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : status === "done" ? (

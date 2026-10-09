@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
   Pencil,
@@ -17,14 +16,18 @@ import {
 import { formatDate } from "@/lib/utils";
 import type { ArticleRow } from "@/lib/db";
 
-export default function ArticleManager({
-  articles,
-}: {
-  articles: ArticleRow[];
-}) {
+const filters = ["all", "published", "draft"] as const;
+type Filter = (typeof filters)[number];
+const filterLabel: Record<Filter, string> = {
+  all: "Semua",
+  published: "Terbit",
+  draft: "Draft",
+};
+
+export default function ArticleManager({ articles }: { articles: ArticleRow[] }) {
   const router = useRouter();
   const [q, setQ] = useState("");
-  const [filter, setFilter] = useState<"all" | "published" | "draft">("all");
+  const [filter, setFilter] = useState<Filter>("all");
   const [busyId, setBusyId] = useState<number | null>(null);
   const [confirmId, setConfirmId] = useState<number | null>(null);
 
@@ -59,172 +62,148 @@ export default function ArticleManager({
     router.refresh();
   }
 
+  const iconBtn =
+    "grid h-9 w-9 place-items-center border border-line text-muted transition-colors disabled:opacity-40";
+
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <div className="flex flex-1 items-center gap-2 rounded-xl border border-black/10 dark:border-white/10 bg-white/60 dark:bg-white/5 px-3 focus-within:border-brand-500">
-          <Search className="h-4 w-4 text-black/40 dark:text-white/40" />
+    <div className="space-y-5">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="flex flex-1 items-center gap-2 border border-line bg-surface px-3 focus-within:border-accent">
+          <Search className="h-4 w-4 text-muted" />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Cari artikel..."
+            placeholder="Cari artikel…"
+            aria-label="Cari artikel"
             className="w-full bg-transparent py-2.5 text-sm outline-none"
           />
         </div>
-        <div className="glass flex gap-1 rounded-xl p-1">
-          {(["all", "published", "draft"] as const).map((f) => (
+        <div className="flex gap-1">
+          {filters.map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`relative rounded-lg px-3 py-1.5 text-xs font-medium capitalize transition-colors ${
-                filter === f ? "text-white" : "text-black/60 dark:text-white/60"
+              className={`border px-3 py-2 font-mono text-[11px] uppercase tracking-eyebrow transition-colors ${
+                filter === f
+                  ? "border-accent bg-accent text-accent-ink"
+                  : "border-line text-muted hover:border-ink hover:text-ink"
               }`}
             >
-              {filter === f && (
-                <motion.span
-                  layoutId="filter-pill"
-                  className="absolute inset-0 rounded-lg bg-brand-600"
-                />
-              )}
-              <span className="relative">
-                {f === "all" ? "Semua" : f === "published" ? "Rilis" : "Draft"}
-              </span>
+              {filterLabel[f]}
             </button>
           ))}
         </div>
       </div>
 
-      <div className="space-y-3">
-        <AnimatePresence initial={false}>
-          {list.map((a) => (
-            <motion.div
-              key={a.id}
-              layout
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              className="glass rounded-2xl p-4"
-            >
-              <div className="flex items-start gap-3">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-                        a.status === "published"
-                          ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
-                          : "bg-amber-500/15 text-amber-600 dark:text-amber-400"
-                      }`}
-                    >
-                      {a.status === "published" ? (
-                        <CheckCircle2 className="h-3 w-3" />
-                      ) : (
-                        <FileEdit className="h-3 w-3" />
-                      )}
-                      {a.status === "published" ? "Published" : "Draft"}
-                    </span>
-                    <span className="text-[10px] text-black/50 dark:text-white/50">
-                      {a.category}
-                    </span>
-                  </div>
-                  <Link
-                    href={`/dashboard/artikel/${a.id}/edit`}
-                    className="mt-1 block truncate font-semibold hover:text-brand-500"
+      <ul className="divide-y divide-line border-y border-line">
+        {list.map((a) => (
+          <li key={a.id} className="py-4">
+            <div className="flex items-start gap-3">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-eyebrow ${
+                      a.status === "published" ? "text-accent" : "text-muted"
+                    }`}
                   >
-                    {a.title}
-                  </Link>
-                  <div className="mt-1 flex items-center gap-3 text-[11px] text-black/50 dark:text-white/50">
-                    <span>{formatDate(a.created_at)}</span>
-                    <span className="inline-flex items-center gap-1">
-                      <Eye className="h-3 w-3" /> {a.views}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex shrink-0 items-center gap-1">
-                  {a.status === "published" && (
-                    <a
-                      href={`/artikel/${a.slug}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="grid h-9 w-9 place-items-center rounded-xl border border-black/10 dark:border-white/10 text-black/50 dark:text-white/50 transition-colors hover:border-brand-500/50 hover:text-brand-500"
-                      aria-label="Lihat artikel"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
-                  )}
-                  <button
-                    onClick={() => toggleStatus(a)}
-                    disabled={busyId === a.id}
-                    className="grid h-9 w-9 place-items-center rounded-xl border border-black/10 dark:border-white/10 text-black/50 dark:text-white/50 transition-colors hover:border-emerald-500/50 hover:text-emerald-500 disabled:opacity-50"
-                    aria-label="Ubah status"
-                    title={a.status === "published" ? "Jadikan draft" : "Publikasikan"}
-                  >
-                    {busyId === a.id ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : a.status === "published" ? (
-                      <FileEdit className="h-4 w-4" />
+                    {a.status === "published" ? (
+                      <CheckCircle2 className="h-3 w-3" />
                     ) : (
-                      <CheckCircle2 className="h-4 w-4" />
+                      <FileEdit className="h-3 w-3" />
                     )}
-                  </button>
-                  <Link
-                    href={`/dashboard/artikel/${a.id}/edit`}
-                    className="grid h-9 w-9 place-items-center rounded-xl border border-black/10 dark:border-white/10 text-black/50 dark:text-white/50 transition-colors hover:border-brand-500/50 hover:text-brand-500"
-                    aria-label="Edit"
-                  >
-                    <Pencil className="h-4 w-4" />
-                  </Link>
-                  <button
-                    onClick={() => setConfirmId(a.id)}
-                    className="grid h-9 w-9 place-items-center rounded-xl border border-black/10 dark:border-white/10 text-black/50 dark:text-white/50 transition-colors hover:border-red-500/50 hover:text-red-500"
-                    aria-label="Hapus"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
+                    {a.status === "published" ? "Terbit" : "Draft"}
+                  </span>
+                  <span className="font-mono text-[10px] uppercase tracking-wide text-muted">
+                    {a.category}
+                  </span>
+                </div>
+                <Link
+                  href={`/dashboard/artikel/${a.id}/edit`}
+                  className="mt-1 block truncate font-display text-lg font-semibold tracking-tight transition-colors hover:text-accent"
+                >
+                  {a.title}
+                </Link>
+                <div className="mt-1 flex items-center gap-3 font-mono text-[11px] uppercase tracking-wide text-muted">
+                  <span>{formatDate(a.created_at)}</span>
+                  <span className="inline-flex items-center gap-1">
+                    <Eye className="h-3 w-3" /> {a.views}
+                  </span>
                 </div>
               </div>
 
-              <AnimatePresence>
-                {confirmId === a.id && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="overflow-hidden"
+              <div className="flex shrink-0 items-center gap-1">
+                {a.status === "published" && (
+                  <a
+                    href={`/artikel/${a.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${iconBtn} hover:border-accent hover:text-accent`}
+                    aria-label="Lihat artikel"
                   >
-                    <div className="mt-3 flex items-center justify-between rounded-xl bg-red-500/10 px-3 py-2">
-                      <p className="text-xs text-red-500">
-                        Hapus artikel ini permanen?
-                      </p>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => setConfirmId(null)}
-                          className="rounded-lg px-3 py-1 text-xs hover:bg-black/5 dark:hover:bg-white/10"
-                        >
-                          Batal
-                        </button>
-                        <button
-                          onClick={() => remove(a.id)}
-                          disabled={busyId === a.id}
-                          className="rounded-lg bg-red-500 px-3 py-1 text-xs text-white disabled:opacity-50"
-                        >
-                          Hapus
-                        </button>
-                      </div>
-                    </div>
-                  </motion.div>
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
                 )}
-              </AnimatePresence>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+                <button
+                  onClick={() => toggleStatus(a)}
+                  disabled={busyId === a.id}
+                  className={`${iconBtn} hover:border-accent hover:text-accent`}
+                  aria-label="Ubah status"
+                  title={a.status === "published" ? "Jadikan draft" : "Terbitkan"}
+                >
+                  {busyId === a.id ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : a.status === "published" ? (
+                    <FileEdit className="h-4 w-4" />
+                  ) : (
+                    <CheckCircle2 className="h-4 w-4" />
+                  )}
+                </button>
+                <Link
+                  href={`/dashboard/artikel/${a.id}/edit`}
+                  className={`${iconBtn} hover:border-accent hover:text-accent`}
+                  aria-label="Edit"
+                >
+                  <Pencil className="h-4 w-4" />
+                </Link>
+                <button
+                  onClick={() => setConfirmId(a.id)}
+                  className={`${iconBtn} hover:border-danger hover:text-danger`}
+                  aria-label="Hapus"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
 
-        {list.length === 0 && (
-          <p className="py-12 text-center text-sm text-black/50 dark:text-white/50">
-            Tidak ada artikel yang cocok.
-          </p>
-        )}
-      </div>
+            {confirmId === a.id && (
+              <div className="mt-3 flex items-center justify-between gap-3 border border-danger/40 bg-danger/10 px-3 py-2">
+                <p className="text-xs text-danger">Hapus artikel ini permanen?</p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setConfirmId(null)}
+                    className="border border-line px-3 py-1 font-mono text-[11px] uppercase tracking-eyebrow text-muted hover:border-ink hover:text-ink"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    onClick={() => remove(a.id)}
+                    disabled={busyId === a.id}
+                    className="bg-danger px-3 py-1 font-mono text-[11px] uppercase tracking-eyebrow text-paper disabled:opacity-40"
+                  >
+                    Hapus
+                  </button>
+                </div>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+
+      {list.length === 0 && (
+        <p className="py-12 text-center text-sm text-muted">
+          Tidak ada artikel yang cocok.
+        </p>
+      )}
     </div>
   );
 }

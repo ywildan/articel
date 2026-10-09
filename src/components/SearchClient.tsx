@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
 import { Search, Loader2 } from "lucide-react";
 import ArticleCard from "@/components/ArticleCard";
 import EmptyState from "@/components/EmptyState";
@@ -34,7 +33,7 @@ export default function SearchClient() {
           setSearched(true);
         }
       } catch {
-        /* abaikan */
+        /* jaringan gagal; biarkan hasil sebelumnya */
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -47,28 +46,26 @@ export default function SearchClient() {
   }, [q]);
 
   return (
-    <div className="container-x pt-32 pb-10">
-      <motion.h1
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-3xl font-black tracking-tight sm:text-4xl"
-      >
-        Cari <span className="gradient-text">Artikel</span>
-      </motion.h1>
+    <div className="container-x pt-12 pb-16">
+      <p className="eyebrow">Arsip</p>
+      <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">
+        Cari artikel
+      </h1>
 
-      <div className="mt-6 flex items-center gap-2 rounded-2xl border border-black/10 dark:border-white/10 bg-white/60 dark:bg-white/5 p-2 backdrop-blur-xl focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/20">
-        <Search className="ml-2 h-4 w-4 shrink-0 text-black/40 dark:text-white/40" />
+      <div className="mt-8 flex items-center gap-3 border-b border-ink pb-2">
+        <Search className="h-4 w-4 shrink-0 text-muted" />
         <input
           autoFocus
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Ketik kata kunci..."
-          className="w-full bg-transparent px-1 py-1.5 text-sm outline-none placeholder:text-black/40 dark:placeholder:text-white/40"
+          placeholder="Ketik kata kunci…"
+          aria-label="Kata kunci pencarian"
+          className="w-full bg-transparent py-1 text-base outline-none placeholder:text-muted/60"
         />
-        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin text-brand-500" />}
+        {loading && <Loader2 className="h-4 w-4 animate-spin text-accent" />}
       </div>
 
-      <div className="mt-8">
+      <div className="mt-10">
         {!searched && !loading ? (
           <EmptyState
             icon={<Search className="h-6 w-6" />}
@@ -83,8 +80,8 @@ export default function SearchClient() {
           />
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {results.map((a, i) => (
-              <ArticleCard key={a.id} article={a} index={i} />
+            {results.map((a) => (
+              <ArticleCard key={a.id} article={a} />
             ))}
           </div>
         )}

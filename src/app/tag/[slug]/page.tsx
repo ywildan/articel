@@ -18,38 +18,36 @@ export default async function TagPage({ params }: Props) {
   const articles = await getPublishedArticles({ tag: name });
 
   return (
-    <div className="container-x pt-32 pb-10">
+    <div className="container-x pt-12 pb-16">
       <Link
         href="/"
-        className="btn-ghost -ml-4 mb-6 inline-flex text-sm text-black/60 dark:text-white/60"
+        className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-eyebrow text-muted transition-colors hover:text-accent"
       >
-        <ArrowLeft className="h-4 w-4" /> Beranda
+        <ArrowLeft className="h-3.5 w-3.5" /> Beranda
       </Link>
 
-      <div className="mb-8 flex items-center gap-3">
-        <div className="grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-cyan-400 text-white">
-          <TagIcon className="h-5 w-5" />
-        </div>
-        <div>
-          <h1 className="text-3xl font-black tracking-tight">#{name}</h1>
-          <p className="text-sm text-black/60 dark:text-white/60">
-            {articles.length} artikel
-          </p>
-        </div>
-      </div>
+      <p className="eyebrow mt-8">Tag</p>
+      <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">
+        #{name}
+      </h1>
+      <p className="mt-3 font-mono text-sm text-muted">
+        {articles.length} artikel
+      </p>
 
-      {articles.length === 0 ? (
-        <EmptyState
-          icon={<TagIcon className="h-6 w-6" />}
-          title="Belum ada artikel dengan tag ini"
-        />
-      ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {articles.map((a, i) => (
-            <ArticleCard key={a.id} article={a} index={i} />
-          ))}
-        </div>
-      )}
+      <div className="mt-10 border-t border-line pt-10">
+        {articles.length === 0 ? (
+          <EmptyState
+            icon={<TagIcon className="h-6 w-6" />}
+            title="Belum ada artikel dengan tag ini"
+          />
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {articles.map((a) => (
+              <ArticleCard key={a.id} article={a} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

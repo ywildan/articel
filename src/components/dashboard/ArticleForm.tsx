@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import {
   Save,
   Loader2,
@@ -68,7 +67,7 @@ export default function ArticleForm({ article }: { article?: Article }) {
       setStatus(nextStatus);
       setMessage({
         type: "ok",
-        text: nextStatus === "published" ? "Artikel dipublikasikan!" : "Draft tersimpan.",
+        text: nextStatus === "published" ? "Artikel diterbitkan." : "Draft tersimpan.",
       });
       if (!isEdit && data.slug) {
         router.replace(`/dashboard/artikel`);
@@ -84,78 +83,78 @@ export default function ArticleForm({ article }: { article?: Article }) {
     }
   }
 
+  const tabClass = (active: boolean) =>
+    `inline-flex items-center gap-2 border-b-2 px-3 py-2 font-mono text-xs uppercase tracking-eyebrow transition-colors ${
+      active
+        ? "border-accent text-accent"
+        : "border-transparent text-muted hover:text-ink"
+    }`;
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <div className="flex items-center justify-between">
         <Link
           href="/dashboard/artikel"
-          className="btn-ghost -ml-3 text-sm text-black/60 dark:text-white/60"
+          className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-eyebrow text-muted transition-colors hover:text-accent"
         >
-          <ArrowLeft className="h-4 w-4" /> Kembali
+          <ArrowLeft className="h-3.5 w-3.5" /> Kembali
         </Link>
         <div className="flex gap-2">
           <button
             onClick={() => save("draft")}
             disabled={saving !== null}
-            className="btn-ghost border border-black/10 dark:border-white/10"
+            className="btn-quiet"
           >
             {saving === "draft" ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <Save className="h-4 w-4" />
             )}
-            <span className="hidden sm:inline">Simpan Draft</span>
+            <span className="hidden sm:inline">Simpan draft</span>
           </button>
           <button
             onClick={() => save("published")}
             disabled={saving !== null}
-            className="btn-primary"
+            className="btn"
           >
             {saving === "published" ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <Send className="h-4 w-4" />
             )}
-            Publikasikan
+            Terbitkan
           </button>
         </div>
       </div>
 
       {message && (
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm ${
+        <div
+          role="status"
+          className={`flex items-center gap-2 border px-4 py-2.5 text-sm ${
             message.type === "ok"
-              ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-              : "bg-red-500/10 text-red-500"
+              ? "border-accent/40 bg-accent-soft text-accent"
+              : "border-danger/40 bg-danger/10 text-danger"
           }`}
         >
-          {message.type === "ok" ? (
-            <CheckCircle2 className="h-4 w-4" />
-          ) : null}
+          {message.type === "ok" && <CheckCircle2 className="h-4 w-4" />}
           {message.text}
-        </motion.div>
+        </div>
       )}
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-        <div className="space-y-4">
-          <div className="glass rounded-2xl p-5">
-            <label className="text-xs font-semibold text-black/60 dark:text-white/60">
-              Judul
-            </label>
+      <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
+        <div className="space-y-5">
+          <div className="border border-line bg-surface p-5">
+            <label className="eyebrow">Judul</label>
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Judul artikel..."
-              className="input mt-1.5 text-lg font-semibold"
+              placeholder="Judul artikel…"
+              className="input mt-2 font-display text-lg"
             />
 
-            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="text-xs font-semibold text-black/60 dark:text-white/60">
-                  Slug
-                </label>
+                <label className="eyebrow">Slug</label>
                 <input
                   value={effectiveSlug}
                   onChange={(e) => {
@@ -163,47 +162,31 @@ export default function ArticleForm({ article }: { article?: Article }) {
                     setSlug(e.target.value);
                   }}
                   placeholder="slug-artikel"
-                  className="input mt-1.5 font-mono text-xs"
+                  className="input mt-2 font-mono text-xs"
                 />
               </div>
               <div>
-                <label className="text-xs font-semibold text-black/60 dark:text-white/60">
-                  Kategori
-                </label>
+                <label className="eyebrow">Kategori</label>
                 <input
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   placeholder="teknologi"
-                  className="input mt-1.5"
+                  className="input mt-2"
                 />
               </div>
             </div>
           </div>
 
-          <div className="glass overflow-hidden rounded-2xl">
-            <div className="flex items-center gap-1 border-b border-black/5 dark:border-white/10 p-2">
-              <button
-                onClick={() => setTab("edit")}
-                className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-                  tab === "edit"
-                    ? "bg-brand-500/15 text-brand-500"
-                    : "text-black/60 dark:text-white/60"
-                }`}
-              >
+          <div className="border border-line bg-surface">
+            <div className="flex items-center gap-1 border-b border-line px-2">
+              <button onClick={() => setTab("edit")} className={tabClass(tab === "edit")}>
                 <Code2 className="h-4 w-4" /> Tulis
               </button>
-              <button
-                onClick={() => setTab("preview")}
-                className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-                  tab === "preview"
-                    ? "bg-brand-500/15 text-brand-500"
-                    : "text-black/60 dark:text-white/60"
-                }`}
-              >
+              <button onClick={() => setTab("preview")} className={tabClass(tab === "preview")}>
                 <Eye className="h-4 w-4" /> Preview
               </button>
-              <span className="ml-auto px-2 text-[11px] text-black/40 dark:text-white/40">
-                Markdown didukung
+              <span className="ml-auto px-2 font-mono text-[11px] uppercase tracking-wide text-muted">
+                Markdown
               </span>
             </div>
 
@@ -211,16 +194,18 @@ export default function ArticleForm({ article }: { article?: Article }) {
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="Tulis isi artikel dalam Markdown...&#10;&#10;# Judul&#10;Paragraf dengan **bold**, [link](https://...), dan gambar."
+                placeholder={
+                  "Tulis isi artikel dalam Markdown…\n\n# Judul\nParagraf dengan **bold**, [link](https://…), dan gambar."
+                }
                 rows={18}
-                className="w-full resize-y bg-transparent p-5 font-mono text-sm outline-none placeholder:text-black/30 dark:placeholder:text-white/30"
+                className="w-full resize-y bg-transparent p-5 font-mono text-sm outline-none placeholder:text-muted/50"
               />
             ) : (
               <div className="min-h-[24rem] p-5">
                 {content.trim() ? (
                   <Markdown content={content} />
                 ) : (
-                  <p className="text-sm text-black/40 dark:text-white/40">
+                  <p className="text-sm text-muted">
                     Belum ada isi untuk dipratinjau.
                   </p>
                 )}
@@ -229,63 +214,55 @@ export default function ArticleForm({ article }: { article?: Article }) {
           </div>
         </div>
 
-        <aside className="space-y-4">
-          <div className="glass rounded-2xl p-5">
-            <label className="text-xs font-semibold text-black/60 dark:text-white/60">
-              Ringkasan
-            </label>
+        <aside className="space-y-5">
+          <div className="border border-line bg-surface p-5">
+            <label className="eyebrow">Ringkasan</label>
             <textarea
               value={excerpt}
               onChange={(e) => setExcerpt(e.target.value)}
               rows={3}
-              placeholder="Ringkasan singkat untuk kartu & SEO..."
-              className="input mt-1.5 resize-y"
+              placeholder="Ringkasan singkat untuk kartu & SEO…"
+              className="input mt-2 resize-y"
             />
           </div>
 
-          <div className="glass rounded-2xl p-5">
-            <label className="text-xs font-semibold text-black/60 dark:text-white/60">
-              URL Gambar Sampul
-            </label>
+          <div className="border border-line bg-surface p-5">
+            <label className="eyebrow">URL gambar sampul</label>
             <input
               value={coverImage}
               onChange={(e) => setCoverImage(e.target.value)}
-              placeholder="https://..."
-              className="input mt-1.5"
+              placeholder="https://…"
+              className="input mt-2"
             />
             {coverImage && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={coverImage}
                 alt="Pratinjau sampul"
-                className="mt-3 aspect-video w-full rounded-xl object-cover"
+                className="mt-3 aspect-video w-full border border-line object-cover"
               />
             )}
           </div>
 
-          <div className="glass rounded-2xl p-5">
-            <label className="text-xs font-semibold text-black/60 dark:text-white/60">
-              Tag (pisahkan dengan koma)
-            </label>
+          <div className="border border-line bg-surface p-5">
+            <label className="eyebrow">Tag (pisahkan dengan koma)</label>
             <input
               value={tags}
               onChange={(e) => setTags(e.target.value)}
               placeholder="nextjs, vercel, web"
-              className="input mt-1.5"
+              className="input mt-2"
             />
           </div>
 
-          <div className="glass rounded-2xl p-5">
-            <label className="text-xs font-semibold text-black/60 dark:text-white/60">
-              Status
-            </label>
+          <div className="border border-line bg-surface p-5">
+            <label className="eyebrow">Status</label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as "draft" | "published")}
-              className="input mt-1.5"
+              className="input mt-2"
             >
               <option value="draft">Draft</option>
-              <option value="published">Published</option>
+              <option value="published">Terbit</option>
             </select>
           </div>
         </aside>

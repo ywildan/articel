@@ -19,19 +19,16 @@ export default function ShareButtons({
       name: "Twitter",
       icon: Twitter,
       href: `https://twitter.com/intent/tweet?url=${encoded}&text=${encodedTitle}`,
-      color: "hover:bg-sky-500 hover:text-white",
     },
     {
       name: "Facebook",
       icon: Facebook,
       href: `https://www.facebook.com/sharer/sharer.php?u=${encoded}`,
-      color: "hover:bg-blue-600 hover:text-white",
     },
     {
       name: "LinkedIn",
       icon: Linkedin,
       href: `https://www.linkedin.com/sharing/share-offsite/?url=${encoded}`,
-      color: "hover:bg-blue-700 hover:text-white",
     },
   ];
 
@@ -41,15 +38,16 @@ export default function ShareButtons({
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
     } catch {
-      /* abaikan */
+      /* clipboard tidak tersedia */
     }
   }
 
+  const base =
+    "grid h-9 w-9 place-items-center border border-line text-muted transition-colors hover:border-accent hover:text-accent";
+
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <span className="mr-1 text-sm font-medium text-black/60 dark:text-white/60">
-        Bagikan:
-      </span>
+      <span className="eyebrow mr-1">Bagikan</span>
       {networks.map((n) => (
         <a
           key={n.name}
@@ -57,16 +55,12 @@ export default function ShareButtons({
           target="_blank"
           rel="noopener noreferrer"
           aria-label={`Bagikan ke ${n.name}`}
-          className={`grid h-9 w-9 place-items-center rounded-xl border border-black/10 dark:border-white/10 transition-all hover:-translate-y-0.5 ${n.color}`}
+          className={base}
         >
           <n.icon className="h-4 w-4" />
         </a>
       ))}
-      <button
-        onClick={copy}
-        aria-label="Salin tautan"
-        className="grid h-9 w-9 place-items-center rounded-xl border border-black/10 dark:border-white/10 transition-all hover:-translate-y-0.5 hover:bg-brand-500 hover:text-white"
-      >
+      <button onClick={copy} aria-label="Salin tautan" className={base}>
         {copied ? <Check className="h-4 w-4" /> : <Link2 className="h-4 w-4" />}
       </button>
     </div>

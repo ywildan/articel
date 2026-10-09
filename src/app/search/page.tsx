@@ -7,7 +7,13 @@ export const metadata: Metadata = { title: "Cari" };
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={<div className="container-x pt-32">Memuat...</div>}>
+    <Suspense
+      fallback={
+        <div className="container-x pt-12 font-mono text-xs uppercase tracking-eyebrow text-muted">
+          Memuat…
+        </div>
+      }
+    >
       <SearchClient />
     </Suspense>
   );

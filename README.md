@@ -1,6 +1,6 @@
-# Artikel Web
+# Kabar — Web Artikel
 
-Web artikel full-fitur dengan dashboard admin, dibuat dengan **Next.js 14 (App Router) + TypeScript + Tailwind CSS + Framer Motion**, siap deploy ke **Vercel**. Data disimpan di **Neon Postgres**.
+Situs artikel dan catatan panjang dengan dashboard admin, dibuat dengan **Next.js 14 (App Router) + TypeScript + Tailwind CSS**, siap deploy ke **Vercel**. Data disimpan di **Neon Postgres**. Tampilan bergaya editorial (kertas–tinta, satu aksen warna), tanpa animasi berlebihan.
 
 ## Fitur
 

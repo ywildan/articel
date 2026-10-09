@@ -1,71 +1,41 @@
-"use client";
+import SearchBox from "@/components/SearchBox";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { Search, ArrowRight, Sparkles } from "lucide-react";
+function editionDate() {
+  return new Intl.DateTimeFormat("id-ID", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date());
+}
 
 export default function Hero({ count }: { count: number }) {
-  const router = useRouter();
-  const [q, setQ] = useState("");
-
-  function submit(e: React.FormEvent) {
-    e.preventDefault();
-    router.push(q.trim() ? `/search?q=${encodeURIComponent(q.trim())}` : "/search");
-  }
-
   return (
-    <section className="relative pt-32 pb-16 sm:pt-40 sm:pb-20">
-      <div className="container-x text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mx-auto inline-flex items-center gap-2 rounded-full border border-brand-500/20 bg-brand-500/10 px-4 py-1.5 text-xs font-medium text-brand-600 dark:text-brand-300"
-        >
-          <Sparkles className="h-3.5 w-3.5" />
-          {count} artikel tersedia untuk dibaca
-        </motion.div>
+    <section className="border-b border-line">
+      <div className="container-x py-12 sm:py-16">
+        <div className="flex items-center justify-between border-b border-line pb-3 font-mono text-[11px] uppercase tracking-eyebrow text-muted">
+          <span>{editionDate()}</span>
+          <span>{count} artikel terbit</span>
+        </div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.05 }}
-          className="mx-auto mt-6 max-w-3xl text-4xl font-black leading-tight tracking-tight sm:text-6xl"
-        >
-          Ide besar dimulai dari{" "}
-          <span className="gradient-text">tulisan yang baik</span>
-        </motion.h1>
+        <div className="grid gap-10 pt-8 lg:grid-cols-[1.4fr_1fr] lg:items-end">
+          <div>
+            <h1 className="font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+              Tulisan yang layak
+              <br />
+              dibaca pelan.
+            </h1>
+            <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted">
+              Kabar mengumpulkan catatan, esai, dan laporan panjang. Disaring
+              per kategori dan tag, terbuka untuk dikomentari.
+            </p>
+          </div>
 
-        <motion.p
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.12 }}
-          className="mx-auto mt-5 max-w-xl text-base text-black/60 dark:text-white/60 sm:text-lg"
-        >
-          Jelajahi artikel pilihan, filter berdasarkan kategori dan tag, lalu
-          bagikan pemikiranmu lewat komentar.
-        </motion.p>
-
-        <motion.form
-          onSubmit={submit}
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.18 }}
-          className="mx-auto mt-8 flex max-w-lg items-center gap-2 rounded-2xl border border-black/10 dark:border-white/10 bg-white/60 dark:bg-white/5 p-2 backdrop-blur-xl focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/20"
-        >
-          <Search className="ml-2 h-4 w-4 shrink-0 text-black/40 dark:text-white/40" />
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Cari artikel, topik, atau penulis..."
-            className="w-full bg-transparent px-1 text-sm outline-none placeholder:text-black/40 dark:placeholder:text-white/40"
-          />
-          <button type="submit" className="btn-primary shrink-0 !py-2">
-            Cari
-            <ArrowRight className="h-4 w-4" />
-          </button>
-        </motion.form>
+          <div className="lg:pb-2">
+            <p className="eyebrow mb-3">Telusuri arsip</p>
+            <SearchBox />
+          </div>
+        </div>
       </div>
     </section>
   );
