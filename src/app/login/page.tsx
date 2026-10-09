@@ -7,7 +7,7 @@ import { Loader2, Eye, EyeOff } from "lucide-react";
 function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
-  const next = params.get("next") || "/dashboard";
+  const next = params.get("next") || "/admin";
 
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);

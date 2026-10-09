@@ -52,9 +52,6 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Link href="/dashboard" className="btn-quiet hidden sm:inline-flex">
-            Dashboard
-          </Link>
           <button
             onClick={() => setOpen((v) => !v)}
             className="grid h-9 w-9 place-items-center border border-line text-ink transition-colors hover:border-ink md:hidden"
@@ -80,12 +77,6 @@ export default function Navbar() {
                 {l.label}
               </Link>
             ))}
-            <Link
-              href="/dashboard"
-              className="py-3 font-mono text-xs uppercase tracking-eyebrow text-ink"
-            >
-              Dashboard
-            </Link>
           </div>
         </div>
       )}

@@ -6,9 +6,9 @@ import { usePathname, useRouter } from "next/navigation";
 import { LogOut, Plus } from "lucide-react";
 
 const tabs = [
-  { href: "/dashboard", label: "Ringkasan", exact: true },
-  { href: "/dashboard/artikel", label: "Artikel", exact: false },
-  { href: "/dashboard/komentar", label: "Komentar", exact: false },
+  { href: "/admin", label: "Ringkasan", exact: true },
+  { href: "/admin/artikel", label: "Artikel", exact: false },
+  { href: "/admin/komentar", label: "Komentar", exact: false },
 ];
 
 export default function DashboardNav() {
@@ -47,7 +47,7 @@ export default function DashboardNav() {
       </nav>
 
       <div className="flex gap-2">
-        <Link href="/dashboard/artikel/baru" className="btn">
+        <Link href="/admin/artikel/baru" className="btn">
           <Plus className="h-4 w-4" /> Tulis
         </Link>
         <button

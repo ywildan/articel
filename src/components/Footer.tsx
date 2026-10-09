@@ -6,29 +6,23 @@ const explore = [
   { href: "/search", label: "Cari" },
 ];
 
-const admin = [
-  { href: "/login", label: "Login" },
-  { href: "/dashboard", label: "Dashboard" },
-];
-
 export default function Footer() {
   return (
     <footer className="mt-20 border-t border-line">
       <div className="container-x py-12">
-        <div className="grid gap-10 md:grid-cols-[2fr_1fr_1fr]">
+        <div className="grid gap-10 md:grid-cols-[2fr_1fr]">
           <div>
             <Link href="/" className="font-display text-2xl font-semibold tracking-tight">
               Kabar
             </Link>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted">
-              Tempat membaca dan mengelola tulisan panjang — catatan, esai, dan
-              laporan. Setiap artikel ditulis, disunting, dan diterbitkan dari
-              dashboard.
+              Tempat membaca tulisan panjang — catatan, esai, dan laporan.
+              Setiap artikel ditulis dan disunting dengan saksama sebelum
+              diterbitkan.
             </p>
           </div>
 
           <FooterCol title="Jelajah" links={explore} />
-          <FooterCol title="Admin" links={admin} />
         </div>
 
         <div className="mt-12 flex flex-col gap-2 border-t border-line pt-6 font-mono text-[11px] uppercase tracking-eyebrow text-muted sm:flex-row sm:items-center sm:justify-between">

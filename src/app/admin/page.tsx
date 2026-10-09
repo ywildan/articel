@@ -36,7 +36,7 @@ export default async function DashboardPage() {
             Artikel terbaru
           </h2>
           <Link
-            href="/dashboard/artikel"
+            href="/admin/artikel"
             className="font-mono text-[11px] uppercase tracking-eyebrow text-accent hover:opacity-70"
           >
             Kelola semua →
@@ -58,7 +58,7 @@ export default async function DashboardPage() {
                   title={a.status === "published" ? "Terbit" : "Draft"}
                 />
                 <Link
-                  href={`/dashboard/artikel/${a.id}/edit`}
+                  href={`/admin/artikel/${a.id}/edit`}
                   className="min-w-0 flex-1 truncate text-sm transition-colors hover:text-accent"
                 >
                   {a.title}

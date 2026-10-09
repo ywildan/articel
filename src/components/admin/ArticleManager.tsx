@@ -118,7 +118,7 @@ export default function ArticleManager({ articles }: { articles: ArticleRow[] })
                   </span>
                 </div>
                 <Link
-                  href={`/dashboard/artikel/${a.id}/edit`}
+                  href={`/admin/artikel/${a.id}/edit`}
                   className="mt-1 block truncate font-display text-lg font-semibold tracking-tight transition-colors hover:text-accent"
                 >
                   {a.title}
@@ -159,7 +159,7 @@ export default function ArticleManager({ articles }: { articles: ArticleRow[] })
                   )}
                 </button>
                 <Link
-                  href={`/dashboard/artikel/${a.id}/edit`}
+                  href={`/admin/artikel/${a.id}/edit`}
                   className={`${iconBtn} hover:border-accent hover:text-accent`}
                   aria-label="Edit"
                 >

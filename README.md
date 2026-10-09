@@ -23,11 +23,11 @@ Situs artikel dan catatan panjang dengan dashboard admin, dibuat dengan **Next.j
 
 ```
 src/
-  app/                 # rute (publik + dashboard + api)
+  app/                 # rute (publik + admin + api)
   components/          # komponen UI & animasi
   lib/                 # db, auth, util
   lib/schema.sql       # skema database Neon
-middleware.ts          # proteksi /dashboard
+middleware.ts          # proteksi /admin
 ```
 
 ## Cara deploy (tanpa install lokal)
@@ -48,13 +48,13 @@ Upload folder ini ke sebuah repository GitHub (Vercel deploy paling mudah lewat 
    | Nama | Nilai |
    |------|-------|
    | `DATABASE_URL` | connection string Neon |
-   | `ADMIN_PASSWORD` | password login dashboard pilihanmu |
+   | `ADMIN_PASSWORD` | password login admin pilihanmu |
    | `AUTH_SECRET` | string acak ≥ 32 karakter (mis. hasil `openssl rand -base64 32`) |
 
 4. Klik **Deploy**. Vercel akan meng-install semua dependency saat build.
 
-### 4. Buka dashboard
-Akses `https://<domain-kamu>/login`, masukkan `ADMIN_PASSWORD`, lalu kelola artikel di `/dashboard`.
+### 4. Buka dashboard admin
+Halaman publik tidak menautkan ke admin. Akses manual `https://<domain-kamu>/login`, masukkan `ADMIN_PASSWORD`, lalu kelola artikel di `/admin`.
 
 ## Menjalankan lokal (opsional)
 

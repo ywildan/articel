@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getArticleById } from "@/lib/queries";
-import ArticleForm from "@/components/dashboard/ArticleForm";
+import ArticleForm from "@/components/admin/ArticleForm";
 
 export const dynamic = "force-dynamic";
 

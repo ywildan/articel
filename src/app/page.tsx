@@ -27,12 +27,7 @@ export default async function HomePage() {
             <EmptyState
               icon={<FileText className="h-6 w-6" />}
               title="Belum ada artikel"
-              description="Artikel yang kamu terbitkan dari dashboard akan tampil di sini."
-              action={
-                <Link href="/dashboard" className="btn">
-                  Tulis artikel pertama
-                </Link>
-              }
+              description="Artikel yang diterbitkan akan tampil di sini."
             />
           ) : (
             <>

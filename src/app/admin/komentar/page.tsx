@@ -1,5 +1,5 @@
 import { getAllComments } from "@/lib/queries";
-import CommentManager from "@/components/dashboard/CommentManager";
+import CommentManager from "@/components/admin/CommentManager";
 
 export const dynamic = "force-dynamic";
 

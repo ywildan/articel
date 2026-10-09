@@ -1,4 +1,4 @@
-import DashboardNav from "@/components/dashboard/DashboardNav";
+import DashboardNav from "@/components/admin/DashboardNav";
 
 export const dynamic = "force-dynamic";
 

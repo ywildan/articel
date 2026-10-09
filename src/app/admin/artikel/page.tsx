@@ -1,5 +1,5 @@
 import { getAllArticles } from "@/lib/queries";
-import ArticleManager from "@/components/dashboard/ArticleManager";
+import ArticleManager from "@/components/admin/ArticleManager";
 
 export const dynamic = "force-dynamic";
 
