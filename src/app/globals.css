@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 250 250 252;
+  --foreground: 17 20 30;
+}
+
+.dark {
+  --background: 8 10 18;
+  --foreground: 235 238 245;
+}
+
+* {
+  border-color: rgb(var(--foreground) / 0.08);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #598bff, #3366ff);
+  border-radius: 999px;
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .glass {
+    @apply backdrop-blur-xl bg-white/70 dark:bg-white/5 border border-white/40 dark:border-white/10;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/10;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 py-2.5 font-medium text-white
+      transition-all duration-200 hover:bg-brand-500 hover:shadow-lg hover:shadow-brand-500/30 active:scale-95
+      disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 font-medium
+      transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/10 active:scale-95;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-black/10 dark:border-white/10 bg-white/60 dark:bg-white/5
+      px-4 py-2.5 text-sm outline-none transition-all duration-200
+      focus:border-brand-500 focus:ring-4 focus:ring-brand-500/20;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full bg-brand-500/10 px-3 py-1 text-xs font-medium text-brand-600 dark:text-brand-300
+      transition-colors hover:bg-brand-500/20;
+  }
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #3366ff, #a855f7, #ec4899, #3366ff);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-x 6s ease infinite;
+}
+
+/* Markdown / prose tuning */
+.prose a {
+  @apply text-brand-500 underline decoration-brand-500/40 underline-offset-2 transition-colors hover:decoration-brand-500;
+}
+.prose img {
+  @apply rounded-2xl;
+}
+.dark .prose-invert {
+  --tw-prose-body: rgb(226 230 240);
+}
+
+/* Selection */
+::selection {
+  background: rgb(51 102 255 / 0.3);
+}
