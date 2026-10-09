@@ -8,7 +8,11 @@ if (!connectionString) {
   );
 }
 
-export const sql = neon(connectionString);
+// cache: "no-store" wajib: tanpa ini Next.js meng-cache respons fetch driver
+// Neon, sehingga daftar artikel/komentar membeku pada hasil query pertama.
+export const sql = neon(connectionString, {
+  fetchOptions: { cache: "no-store" },
+});
 
 export type Article = {
   id: number;
