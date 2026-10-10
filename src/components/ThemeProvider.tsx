@@ -58,19 +58,23 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // Tema baru menyapu masuk menutupi tema lama:
-    // ke dark dari kanan ke kiri, ke light dari arah sebaliknya.
+    // Lapisan tema LAMA yang dianimasikan terkelupas pergi, menyingkap
+    // tema baru di bawahnya — ke dark terkelupas kanan ke kiri, ke light
+    // sebaliknya. Cara ini bebas kedip: frame pertama lapisan lama memang
+    // tampil utuh secara alami, tidak seperti meng-clip tema baru yang
+    // sempat tampil utuh satu frame sebelum animasinya mulai.
     const transition = document.startViewTransition(apply);
     transition.ready
       .then(() => {
-        const from =
-          next === "dark" ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)";
+        const to =
+          next === "dark" ? "inset(0 100% 0 0)" : "inset(0 0 0 100%)";
         document.documentElement.animate(
-          { clipPath: [from, "inset(0 0 0 0)"] },
+          { clipPath: ["inset(0 0 0 0)", to] },
           {
             duration: 550,
             easing: "ease-in-out",
-            pseudoElement: "::view-transition-new(root)",
+            fill: "forwards",
+            pseudoElement: "::view-transition-old(root)",
           }
         );
       })

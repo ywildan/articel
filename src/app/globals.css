@@ -140,9 +140,10 @@ body {
   border-left-width: 3px;
 }
 
-/* Animasi ganti tema: tema baru menyapu masuk (clip-path diatur dari
-   ThemeProvider via View Transitions API). Cross-fade bawaan dimatikan;
-   tema lama diam di bawah, tema baru di atasnya. */
+/* Animasi ganti tema: lapisan tema lama terkelupas pergi (clip-path
+   diatur dari ThemeProvider via View Transitions API), menyingkap tema
+   baru di bawahnya. Cross-fade bawaan dimatikan; tema lama di atas,
+   tema baru di bawah. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
@@ -150,11 +151,11 @@ body {
 }
 
 ::view-transition-old(root) {
-  z-index: 1;
+  z-index: 2;
 }
 
 ::view-transition-new(root) {
-  z-index: 2;
+  z-index: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
