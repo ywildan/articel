@@ -3,7 +3,7 @@ import { getPublishedArticles, getCategories, getPopularTags } from "@/lib/queri
 import Hero from "@/components/Hero";
 import ArticleCard from "@/components/ArticleCard";
 import EmptyState from "@/components/EmptyState";
-import { formatDate, readingMinutes, readingTime } from "@/lib/utils";
+import { categoryLabel, formatDate, readingMinutes, readingTime } from "@/lib/utils";
 import { FileText } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -78,7 +78,7 @@ export default async function HomePage() {
                     href={`/kategori/${encodeURIComponent(c.category)}`}
                     className="flex items-center justify-between py-3 text-sm transition-colors hover:text-accent"
                   >
-                    <span className="capitalize">{c.category}</span>
+                    <span>{categoryLabel(c.category)}</span>
                     <span className="font-mono text-[11px] text-muted">{c.count}</span>
                   </Link>
                 </li>

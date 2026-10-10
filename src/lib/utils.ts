@@ -7,6 +7,14 @@ export function slugify(input: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
+/** Label tampilan kategori: akronim pendek (<= 3 huruf) jadi uppercase penuh ("ai" -> "AI"), sisanya kapital di awal. */
+export function categoryLabel(category: string): string {
+  const c = category.trim();
+  if (!c) return c;
+  if (c.length <= 3) return c.toUpperCase();
+  return c.charAt(0).toUpperCase() + c.slice(1);
+}
+
 export function formatDate(input: string | Date): string {
   const date = new Date(input);
   return new Intl.DateTimeFormat("id-ID", {

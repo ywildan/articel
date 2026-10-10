@@ -49,17 +49,36 @@ export async function incrementViews(id: number): Promise<void> {
   await sql`UPDATE articles SET views = views + 1 WHERE id = ${id}`;
 }
 
-export async function getCategories(): Promise<
-  { category: string; count: number }[]
-> {
+export type CategorySummary = {
+  category: string;
+  count: number;
+  latest_title: string | null;
+  latest_slug: string | null;
+  latest_at: string | null;
+};
+
+export async function getCategories(): Promise<CategorySummary[]> {
   const rows = await sql`
-    SELECT category, COUNT(*)::int AS count
-    FROM articles
-    WHERE status = 'published'
-    GROUP BY category
-    ORDER BY count DESC
+    SELECT c.category, c.count,
+           l.title AS latest_title,
+           l.slug AS latest_slug,
+           l.created_at AS latest_at
+    FROM (
+      SELECT category, COUNT(*)::int AS count
+      FROM articles
+      WHERE status = 'published'
+      GROUP BY category
+    ) c
+    LEFT JOIN LATERAL (
+      SELECT title, slug, created_at
+      FROM articles a
+      WHERE a.category = c.category AND a.status = 'published'
+      ORDER BY a.created_at DESC
+      LIMIT 1
+    ) l ON true
+    ORDER BY c.count DESC, c.category ASC
   `;
-  return rows as unknown as { category: string; count: number }[];
+  return rows as unknown as CategorySummary[];
 }
 
 export async function getPopularTags(): Promise<

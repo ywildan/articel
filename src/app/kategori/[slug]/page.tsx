@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getPublishedArticles } from "@/lib/queries";
+import { categoryLabel } from "@/lib/utils";
 import ArticleCard from "@/components/ArticleCard";
 import EmptyState from "@/components/EmptyState";
 import { ArrowLeft, Folder } from "lucide-react";
@@ -10,7 +11,7 @@ type Props = { params: { slug: string } };
 
 export async function generateMetadata({ params }: Props) {
   const name = decodeURIComponent(params.slug);
-  return { title: `Kategori: ${name}` };
+  return { title: `Kategori: ${categoryLabel(name)}` };
 }
 
 export default async function CategoryDetailPage({ params }: Props) {
@@ -27,8 +28,8 @@ export default async function CategoryDetailPage({ params }: Props) {
       </Link>
 
       <p className="eyebrow mt-8">Kategori</p>
-      <h1 className="mt-2 font-display text-4xl font-semibold capitalize tracking-tight">
-        {name}
+      <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">
+        {categoryLabel(name)}
       </h1>
       <p className="mt-3 font-mono text-sm text-muted">
         {articles.length} artikel
