@@ -1,18 +1,20 @@
 import Link from "next/link";
-import { getPublishedArticles, getCategories, getPopularTags } from "@/lib/queries";
+import { getPublishedArticles, getCategories, getPopularTags, getTrendingArticles } from "@/lib/queries";
 import Hero from "@/components/Hero";
 import ArticleCard from "@/components/ArticleCard";
 import EmptyState from "@/components/EmptyState";
-import { categoryLabel, formatDate, readingMinutes, readingTime } from "@/lib/utils";
+import SiteSidebar from "@/components/SiteSidebar";
+import { formatDate, readingMinutes, readingTime } from "@/lib/utils";
 import { FileText } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [articles, categories, tags] = await Promise.all([
+  const [articles, categories, tags, trending] = await Promise.all([
     getPublishedArticles({ limit: 13 }),
     getCategories(),
     getPopularTags(),
+    getTrendingArticles({ limit: 5 }),
   ]);
 
   const [lead, ...rest] = articles;
@@ -65,45 +67,7 @@ export default async function HomePage() {
           )}
         </div>
 
-        <aside className="space-y-10 lg:sticky lg:top-24 lg:self-start">
-          <div>
-            <SectionHeading title="Kategori" />
-            <ul className="mt-4 divide-y divide-line border-y border-line">
-              {categories.length === 0 && (
-                <li className="py-3 text-sm text-muted">Belum ada kategori.</li>
-              )}
-              {categories.map((c) => (
-                <li key={c.category}>
-                  <Link
-                    href={`/kategori/${encodeURIComponent(c.category)}`}
-                    className="flex items-center justify-between py-3 text-sm transition-colors hover:text-accent"
-                  >
-                    <span>{categoryLabel(c.category)}</span>
-                    <span className="font-mono text-[11px] text-muted">{c.count}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <SectionHeading title="Tag populer" />
-            <div className="mt-4 flex flex-wrap gap-2">
-              {tags.length === 0 && (
-                <p className="text-sm text-muted">Belum ada tag.</p>
-              )}
-              {tags.map((t) => (
-                <Link
-                  key={t.tag}
-                  href={`/tag/${encodeURIComponent(t.tag)}`}
-                  className="tag-mark"
-                >
-                  #{t.tag}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </aside>
+        <SiteSidebar trending={trending} categories={categories} tags={tags} />
       </div>
     </>
   );

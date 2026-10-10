@@ -22,6 +22,25 @@ export async function getPublishedArticles(opts?: {
   return rows as unknown as ArticleRow[];
 }
 
+export async function getTrendingArticles(opts?: {
+  limit?: number;
+  excludeSlug?: string;
+}): Promise<ArticleRow[]> {
+  const limit = opts?.limit ?? 5;
+  const excludeSlug = opts?.excludeSlug ?? "";
+
+  const rows = await sql`
+    SELECT id, slug, title, excerpt, cover_image, category, tags, status, views, created_at, updated_at,
+      CASE WHEN trim(content) = '' THEN 0 ELSE COALESCE(array_length(regexp_split_to_array(trim(content), '[[:space:]]+'), 1), 0) END::int AS word_count
+    FROM articles
+    WHERE status = 'published'
+      AND (${excludeSlug} = '' OR slug <> ${excludeSlug})
+    ORDER BY views DESC, created_at DESC
+    LIMIT ${limit}
+  `;
+  return rows as unknown as ArticleRow[];
+}
+
 export async function searchArticles(q: string): Promise<ArticleRow[]> {
   const term = `%${q.toLowerCase()}%`;
   const rows = await sql`

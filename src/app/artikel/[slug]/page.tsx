@@ -5,9 +5,13 @@ import type { Metadata } from "next";
 import {
   getArticleBySlug,
   getApprovedComments,
+  getCategories,
+  getPopularTags,
+  getTrendingArticles,
   incrementViews,
 } from "@/lib/queries";
 import Markdown from "@/components/Markdown";
+import SiteSidebar from "@/components/SiteSidebar";
 import ShareButtons from "@/components/ShareButtons";
 import CommentSection from "@/components/CommentSection";
 import { formatDate, readingTime } from "@/lib/utils";
@@ -39,7 +43,12 @@ export default async function ArticlePage({ params }: Props) {
   // naikkan views tanpa menunggu (fire and forget)
   incrementViews(article.id).catch(() => {});
 
-  const comments = await getApprovedComments(article.id);
+  const [comments, trending, categories, tags] = await Promise.all([
+    getApprovedComments(article.id),
+    getTrendingArticles({ limit: 5, excludeSlug: article.slug }),
+    getCategories(),
+    getPopularTags(),
+  ]);
 
   const h = headers();
   const proto = h.get("x-forwarded-proto") ?? "https";
@@ -47,7 +56,8 @@ export default async function ArticlePage({ params }: Props) {
   const url = `${proto}://${host}/artikel/${article.slug}`;
 
   return (
-    <article className="container-x max-w-3xl pt-10 pb-16">
+    <div className="container-x grid gap-12 pt-10 pb-16 lg:grid-cols-[minmax(0,1fr)_280px]">
+    <article className="mx-auto w-full min-w-0 max-w-3xl lg:mx-0">
       <Link
         href="/"
         className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-eyebrow text-muted transition-colors hover:text-accent"
@@ -109,5 +119,13 @@ export default async function ArticlePage({ params }: Props) {
 
       <CommentSection articleId={article.id} comments={comments} />
     </article>
+
+    <SiteSidebar
+      trending={trending}
+      categories={categories}
+      tags={tags}
+      hideOnMobile
+    />
+    </div>
   );
 }
