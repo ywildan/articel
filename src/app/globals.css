@@ -140,6 +140,23 @@ body {
   border-left-width: 3px;
 }
 
+/* Animasi ganti tema: tema baru menyapu masuk (clip-path diatur dari
+   ThemeProvider via View Transitions API). Cross-fade bawaan dimatikan;
+   tema lama diam di bawah, tema baru di atasnya. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

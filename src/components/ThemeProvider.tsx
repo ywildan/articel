@@ -7,6 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { flushSync } from "react-dom";
 
 type Theme = "light" | "dark";
 
@@ -38,12 +39,42 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }
 
   function toggleTheme() {
-    setTheme((prev) => {
-      const next: Theme = prev === "dark" ? "light" : "dark";
+    const next: Theme = theme === "dark" ? "light" : "dark";
+
+    const apply = () => {
       localStorage.setItem("theme", next);
       applyTheme(next);
-      return next;
-    });
+      flushSync(() => setTheme(next));
+    };
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    // Browser tanpa View Transitions API / user mengurangi motion:
+    // ganti tema instan seperti sebelumnya.
+    if (!document.startViewTransition || reduceMotion) {
+      apply();
+      return;
+    }
+
+    // Tema baru menyapu masuk menutupi tema lama:
+    // ke dark dari kanan ke kiri, ke light dari arah sebaliknya.
+    const transition = document.startViewTransition(apply);
+    transition.ready
+      .then(() => {
+        const from =
+          next === "dark" ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)";
+        document.documentElement.animate(
+          { clipPath: [from, "inset(0 0 0 0)"] },
+          {
+            duration: 550,
+            easing: "ease-in-out",
+            pseudoElement: "::view-transition-new(root)",
+          }
+        );
+      })
+      .catch(() => {});
   }
 
   return (
