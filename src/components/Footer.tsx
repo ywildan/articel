@@ -13,7 +13,7 @@ export default function Footer() {
         <div className="grid gap-10 md:grid-cols-[2fr_1fr]">
           <div>
             <Link href="/" className="font-display text-2xl font-semibold tracking-tight">
-              Kabar
+              Konteks
             </Link>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted">
               Tempat membaca tulisan panjang — catatan, esai, dan laporan.
@@ -26,7 +26,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col gap-2 border-t border-line pt-6 font-mono text-[11px] uppercase tracking-eyebrow text-muted sm:flex-row sm:items-center sm:justify-between">
-          <span>© {new Date().getFullYear()} Kabar</span>
+          <span>© {new Date().getFullYear()} Konteks</span>
           <span>Next.js · Neon Postgres</span>
         </div>
       </div>

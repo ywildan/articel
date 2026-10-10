@@ -26,7 +26,7 @@ export default function Hero({ count }: { count: number }) {
               dibaca pelan.
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted">
-              Kabar mengumpulkan catatan, esai, dan laporan panjang. Disaring
+              Konteks mengumpulkan catatan, esai, dan laporan panjang. Disaring
               per kategori dan tag, terbuka untuk dikomentari.
             </p>
           </div>

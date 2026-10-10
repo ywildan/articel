@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Palet "Kabar" — kertas hangat, tinta pekat, satu aksen teal. */
+/* Palet "Konteks" — kertas hangat, tinta pekat, satu aksen teal. */
 :root {
   --paper: 246 245 241;
   --surface: 253 252 250;
@@ -116,7 +116,7 @@ body {
 }
 
 /* Prosa artikel — ukuran baca nyaman, tautan aksen */
-.prose-kabar {
+.prose-konteks {
   --tw-prose-body: rgb(var(--ink));
   --tw-prose-headings: rgb(var(--ink));
   --tw-prose-lead: rgb(var(--muted));
@@ -135,7 +135,7 @@ body {
   --tw-prose-td-borders: rgb(var(--line));
 }
 
-.prose-kabar :where(blockquote):not(:where(.not-prose *)) {
+.prose-konteks :where(blockquote):not(:where(.not-prose *)) {
   font-style: normal;
   border-left-width: 3px;
 }

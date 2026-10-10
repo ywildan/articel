@@ -26,8 +26,8 @@ const mono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Kabar — Catatan dan Artikel",
-    template: "%s · Kabar",
+    default: "Konteks — Catatan dan Artikel",
+    template: "%s · Konteks",
   },
   description:
     "Kumpulan tulisan panjang: catatan, esai, dan laporan. Baca, telusuri per kategori, dan tinggalkan komentar.",

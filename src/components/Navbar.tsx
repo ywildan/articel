@@ -27,7 +27,7 @@ export default function Navbar() {
       <div className="container-x flex h-16 items-center justify-between gap-4">
         <Link href="/" className="flex items-baseline gap-2">
           <span className="font-display text-2xl font-semibold tracking-tight">
-            Kabar
+            Konteks
           </span>
           <span className="hidden font-mono text-[10px] uppercase tracking-eyebrow text-muted sm:inline">
             catatan &amp; artikel
