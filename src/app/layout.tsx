@@ -34,7 +34,7 @@ export const metadata: Metadata = {
 };
 
 const antiFlash = `
-(function(){try{var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}var r=document.documentElement;r.classList.toggle('dark',t==='dark');r.style.colorScheme=t;}catch(e){}})();
+(function(){try{var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}var r=document.documentElement;r.classList.toggle('dark',t==='dark');r.style.colorScheme=t;var l=document.createElement('link');l.rel='icon';l.type='image/svg+xml';l.setAttribute('data-theme-favicon','');l.href=t==='dark'?'/icon-dark.svg':'/icon-light.svg';document.head.appendChild(l);}catch(e){}})();
 `;
 
 export default function RootLayout({

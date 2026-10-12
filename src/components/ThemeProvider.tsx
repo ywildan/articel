@@ -36,6 +36,26 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const root = document.documentElement;
     root.classList.toggle("dark", next === "dark");
     root.style.colorScheme = next;
+    syncFavicon(next);
+  }
+
+  // Favicon mengikuti tema SITUS (toggle), bukan tema OS — SVG adaptif
+  // prefers-color-scheme tidak bisa membaca class .dark. Tukar href ke
+  // varian berpalet tetap; link dipindah ke akhir <head> agar menang
+  // atas link icon bawaan Next.js.
+  function syncFavicon(next: Theme) {
+    const href = next === "dark" ? "/icon-dark.svg" : "/icon-light.svg";
+    let link = document.querySelector<HTMLLinkElement>(
+      "link[data-theme-favicon]"
+    );
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "icon";
+      link.type = "image/svg+xml";
+      link.setAttribute("data-theme-favicon", "");
+    }
+    link.setAttribute("href", href);
+    document.head.appendChild(link);
   }
 
   function toggleTheme() {
