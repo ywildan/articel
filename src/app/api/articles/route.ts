@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
 import { isAdminAuthed } from "@/lib/session";
 import { slugify, parseTags } from "@/lib/utils";
+import { revalidateArticlePaths } from "@/lib/revalidate";
 
 export const dynamic = "force-dynamic";
 
@@ -61,6 +62,10 @@ export async function POST(req: NextRequest) {
     )
     RETURNING id, slug
   `) as unknown as { id: number; slug: string }[];
+
+  if (status === "published") {
+    revalidateArticlePaths({ slug, category, tags });
+  }
 
   return NextResponse.json({ id: rows[0].id, slug: rows[0].slug }, { status: 201 });
 }

@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 import SearchClient from "@/components/SearchClient";
 import { getPublishedArticles } from "@/lib/queries";
 
-export const dynamic = "force-dynamic";
+// ISR: render sekali, sajikan dari cache, segarkan maks. tiap 60 detik
+export const revalidate = 60;
 export const metadata: Metadata = { title: "Cari" };
 
 export default async function SearchPage() {

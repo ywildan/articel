@@ -1,4 +1,10 @@
-import { sql, type Article, type ArticleRow, type Comment } from "@/lib/db";
+import {
+  sql,
+  sqlCached,
+  type Article,
+  type ArticleRow,
+  type Comment,
+} from "@/lib/db";
 
 export async function getPublishedArticles(opts?: {
   category?: string;
@@ -9,7 +15,7 @@ export async function getPublishedArticles(opts?: {
   const tag = opts?.tag ?? "";
   const limit = opts?.limit ?? 100;
 
-  const rows = await sql`
+  const rows = await sqlCached`
     SELECT id, slug, title, excerpt, cover_image, category, tags, status, views, created_at, updated_at,
       CASE WHEN trim(content) = '' THEN 0 ELSE COALESCE(array_length(regexp_split_to_array(trim(content), '[[:space:]]+'), 1), 0) END::int AS word_count
     FROM articles
@@ -29,7 +35,7 @@ export async function getTrendingArticles(opts?: {
   const limit = opts?.limit ?? 5;
   const excludeSlug = opts?.excludeSlug ?? "";
 
-  const rows = await sql`
+  const rows = await sqlCached`
     SELECT id, slug, title, excerpt, cover_image, category, tags, status, views, created_at, updated_at,
       CASE WHEN trim(content) = '' THEN 0 ELSE COALESCE(array_length(regexp_split_to_array(trim(content), '[[:space:]]+'), 1), 0) END::int AS word_count
     FROM articles
@@ -43,7 +49,7 @@ export async function getTrendingArticles(opts?: {
 
 export async function searchArticles(q: string): Promise<ArticleRow[]> {
   const term = `%${q.toLowerCase()}%`;
-  const rows = await sql`
+  const rows = await sqlCached`
     SELECT id, slug, title, excerpt, cover_image, category, tags, status, views, created_at, updated_at,
       CASE WHEN trim(content) = '' THEN 0 ELSE COALESCE(array_length(regexp_split_to_array(trim(content), '[[:space:]]+'), 1), 0) END::int AS word_count
     FROM articles
@@ -60,7 +66,7 @@ export async function searchArticles(q: string): Promise<ArticleRow[]> {
 }
 
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
-  const rows = await sql`SELECT * FROM articles WHERE slug = ${slug} LIMIT 1`;
+  const rows = await sqlCached`SELECT * FROM articles WHERE slug = ${slug} LIMIT 1`;
   return (rows[0] as Article) ?? null;
 }
 
@@ -77,7 +83,7 @@ export type CategorySummary = {
 };
 
 export async function getCategories(): Promise<CategorySummary[]> {
-  const rows = await sql`
+  const rows = await sqlCached`
     SELECT c.category, c.count,
            l.title AS latest_title,
            l.slug AS latest_slug,
@@ -103,7 +109,7 @@ export async function getCategories(): Promise<CategorySummary[]> {
 export async function getPopularTags(): Promise<
   { tag: string; count: number }[]
 > {
-  const rows = await sql`
+  const rows = await sqlCached`
     SELECT tag, COUNT(*)::int AS count
     FROM articles, unnest(tags) AS tag
     WHERE status = 'published'
@@ -117,7 +123,7 @@ export async function getPopularTags(): Promise<
 export async function getApprovedComments(
   articleId: number
 ): Promise<Comment[]> {
-  const rows = await sql`
+  const rows = await sqlCached`
     SELECT * FROM comments
     WHERE article_id = ${articleId} AND approved = true
     ORDER BY created_at DESC

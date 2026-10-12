@@ -5,7 +5,8 @@ import EmptyState from "@/components/EmptyState";
 import { categoryLabel, formatDate } from "@/lib/utils";
 import { ArrowRight, Folder } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+// ISR: render sekali, sajikan dari cache, segarkan maks. tiap 60 detik
+export const revalidate = 60;
 export const metadata: Metadata = { title: "Kategori" };
 
 export default async function CategoriesPage() {

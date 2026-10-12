@@ -10,6 +10,10 @@ export default function Markdown({ content }: { content: string }) {
           a: ({ node, ...props }) => (
             <a {...props} target="_blank" rel="noopener noreferrer" />
           ),
+          img: ({ node, ...props }) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img {...props} alt={props.alt ?? ""} loading="lazy" decoding="async" />
+          ),
         }}
       >
         {content}

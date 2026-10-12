@@ -17,6 +17,11 @@ CREATE TABLE IF NOT EXISTS articles (
 
 CREATE INDEX IF NOT EXISTS articles_status_idx ON articles (status);
 CREATE INDEX IF NOT EXISTS articles_category_idx ON articles (category);
+-- Index gabungan untuk pola query publik: terbaru (status + created_at),
+-- trending (status + views), dan filter tag (GIN untuk operator ANY).
+CREATE INDEX IF NOT EXISTS articles_status_created_idx ON articles (status, created_at DESC);
+CREATE INDEX IF NOT EXISTS articles_status_views_idx ON articles (status, views DESC);
+CREATE INDEX IF NOT EXISTS articles_tags_gin_idx ON articles USING GIN (tags);
 
 CREATE TABLE IF NOT EXISTS comments (
   id            BIGSERIAL PRIMARY KEY,

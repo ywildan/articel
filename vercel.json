@@ -1,3 +1,1 @@
-{
-  "buildCommand": "node scripts/decode-icons.mjs && next build"
-}
+{"buildCommand":"node scripts/decode-icons.mjs && next build","regions":["sin1"]}

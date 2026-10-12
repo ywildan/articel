@@ -2,10 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
 import { isAdminAuthed } from "@/lib/session";
 import { slugify, parseTags } from "@/lib/utils";
+import { revalidateArticlePaths } from "@/lib/revalidate";
 
 export const dynamic = "force-dynamic";
 
 type Ctx = { params: { id: string } };
+
+type ArticlePaths = { slug: string; category: string; tags: string[] };
+
+async function articlePaths(id: number): Promise<ArticlePaths | undefined> {
+  const rows = await sql`
+    SELECT slug, category, tags FROM articles WHERE id = ${id} LIMIT 1
+  `;
+  return rows[0] as unknown as ArticlePaths | undefined;
+}
 
 export async function GET(_req: NextRequest, { params }: Ctx) {
   if (!(await isAdminAuthed())) {
@@ -48,6 +58,7 @@ export async function PUT(req: NextRequest, { params }: Ctx) {
     );
   }
 
+  const oldPaths = await articlePaths(id);
   const slug = slugify(body.slug?.trim() || title);
   const clash = await sql`
     SELECT id FROM articles WHERE slug = ${slug} AND id <> ${id} LIMIT 1
@@ -77,6 +88,10 @@ export async function PUT(req: NextRequest, { params }: Ctx) {
     WHERE id = ${id}
   `;
 
+  // Segarkan jalur lama (slug/kategori/tag bisa berubah) dan jalur baru.
+  if (oldPaths) revalidateArticlePaths(oldPaths);
+  revalidateArticlePaths({ slug, category, tags });
+
   return NextResponse.json({ ok: true, slug });
 }
 
@@ -92,6 +107,8 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
   await sql`
     UPDATE articles SET status = ${status}, updated_at = now() WHERE id = ${id}
   `;
+  const paths = await articlePaths(id);
+  if (paths) revalidateArticlePaths(paths);
   return NextResponse.json({ ok: true });
 }
 
@@ -103,6 +120,8 @@ export async function DELETE(_req: NextRequest, { params }: Ctx) {
   if (!id) {
     return NextResponse.json({ error: "ID tidak valid" }, { status: 400 });
   }
+  const paths = await articlePaths(id);
   await sql`DELETE FROM articles WHERE id = ${id}`;
+  if (paths) revalidateArticlePaths(paths);
   return NextResponse.json({ ok: true });
 }

@@ -8,10 +8,18 @@ if (!connectionString) {
   );
 }
 
-// cache: "no-store" wajib: tanpa ini Next.js meng-cache respons fetch driver
-// Neon, sehingga daftar artikel/komentar membeku pada hasil query pertama.
-export const sql = neon(connectionString, {
-  fetchOptions: { cache: "no-store" },
+// Jangan pasang fetchOptions cache:"no-store" di sini: opsi itu membuat
+// Next.js menolak prerender halaman publik (Dynamic server usage) sehingga
+// ISR tidak bisa jalan.
+export const sql = neon(connectionString);
+
+// Klien khusus query BACA halaman publik: respons fetch-nya disimpan di
+// Data Cache Next.js (kedaluwarsa 60 detik, tag "db") agar render ISR
+// tidak selalu menembak database. Semua mutasi dan query dashboard/admin
+// WAJIB tetap memakai `sql` biasa supaya selalu dieksekusi segar. Tag
+// "db" dibersihkan revalidateArticlePaths setiap ada perubahan konten.
+export const sqlCached = neon(connectionString, {
+  fetchOptions: { next: { revalidate: 60, tags: ["db"] } },
 });
 
 export type Article = {

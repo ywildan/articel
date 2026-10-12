@@ -7,7 +7,8 @@ import SiteSidebar from "@/components/SiteSidebar";
 import { formatDate, readingMinutes, readingTime } from "@/lib/utils";
 import { FileText } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+// ISR: render sekali, sajikan dari cache, segarkan maks. tiap 60 detik
+export const revalidate = 60;
 
 export default async function HomePage() {
   const [articles, categories, tags, trending] = await Promise.all([

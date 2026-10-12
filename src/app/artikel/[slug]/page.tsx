@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { headers } from "next/headers";
+import Image from "next/image";
 import type { Metadata } from "next";
 import {
   getArticleBySlug,
@@ -8,18 +8,24 @@ import {
   getCategories,
   getPopularTags,
   getTrendingArticles,
-  incrementViews,
 } from "@/lib/queries";
 import Markdown from "@/components/Markdown";
+import ViewBeacon from "@/components/ViewBeacon";
 import SiteSidebar from "@/components/SiteSidebar";
 import ShareButtons from "@/components/ShareButtons";
 import CommentSection from "@/components/CommentSection";
 import { formatDate, readingTime } from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+// ISR: render sekali, sajikan dari cache, segarkan maks. tiap 60 detik
+export const revalidate = 60;
 
 type Props = { params: { slug: string } };
+
+// URL kanonik untuk tombol share — halaman ini statis (ISR), jadi tidak
+// bisa membaca header host per request.
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.ywildan.web.id";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const article = await getArticleBySlug(params.slug);
@@ -40,9 +46,6 @@ export default async function ArticlePage({ params }: Props) {
   const article = await getArticleBySlug(params.slug);
   if (!article || article.status !== "published") notFound();
 
-  // naikkan views tanpa menunggu (fire and forget)
-  incrementViews(article.id).catch(() => {});
-
   const [comments, trending, categories, tags] = await Promise.all([
     getApprovedComments(article.id),
     getTrendingArticles({ limit: 5, excludeSlug: article.slug }),
@@ -50,10 +53,7 @@ export default async function ArticlePage({ params }: Props) {
     getPopularTags(),
   ]);
 
-  const h = headers();
-  const proto = h.get("x-forwarded-proto") ?? "https";
-  const host = h.get("host") ?? "localhost:3000";
-  const url = `${proto}://${host}/artikel/${article.slug}`;
+  const url = `${SITE_URL}/artikel/${article.slug}`;
 
   return (
     <div className="container-x grid gap-12 pt-10 pb-16 lg:grid-cols-[minmax(0,1fr)_280px]">
@@ -91,12 +91,16 @@ export default async function ArticlePage({ params }: Props) {
       </div>
 
       {article.cover_image && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={article.cover_image}
-          alt=""
-          className="mt-8 aspect-[16/9] w-full border border-line object-cover"
-        />
+        <div className="relative mt-8 aspect-[16/9] w-full border border-line">
+          <Image
+            src={article.cover_image}
+            alt=""
+            fill
+            priority
+            sizes="(max-width: 1152px) 100vw, 760px"
+            className="object-cover"
+          />
+        </div>
       )}
 
       <div className="mt-10">
@@ -117,6 +121,7 @@ export default async function ArticlePage({ params }: Props) {
         <ShareButtons url={url} title={article.title} />
       </div>
 
+      <ViewBeacon articleId={article.id} />
       <CommentSection articleId={article.id} comments={comments} />
     </article>
 
