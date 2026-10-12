@@ -9,6 +9,12 @@ export const revalidate = 60;
 
 type Props = { params: { slug: string } };
 
+// Daftar kosong: tag dirender saat pertama diminta lalu masuk cache
+// ISR. Tanpa fungsi ini route [slug] dianggap dinamis penuh.
+export async function generateStaticParams() {
+  return [];
+}
+
 export async function generateMetadata({ params }: Props) {
   const name = decodeURIComponent(params.slug);
   return { title: `Tag: #${name}` };

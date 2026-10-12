@@ -7,6 +7,7 @@ import {
   getApprovedComments,
   getCategories,
   getPopularTags,
+  getPublishedArticles,
   getTrendingArticles,
 } from "@/lib/queries";
 import Markdown from "@/components/Markdown";
@@ -21,6 +22,14 @@ import { ArrowLeft } from "lucide-react";
 export const revalidate = 60;
 
 type Props = { params: { slug: string } };
+
+// Prerender artikel terbit saat build; slug lain dirender saat pertama
+// diminta lalu masuk cache ISR (dynamicParams default true). Tanpa
+// fungsi ini route [slug] dianggap dinamis penuh oleh Next.js.
+export async function generateStaticParams() {
+  const articles = await getPublishedArticles({ limit: 1000 });
+  return articles.map((a) => ({ slug: a.slug }));
+}
 
 // URL kanonik untuk tombol share — halaman ini statis (ISR), jadi tidak
 // bisa membaca header host per request.
