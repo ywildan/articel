@@ -11,12 +11,12 @@ import {
   getTrendingArticles,
 } from "@/lib/queries";
 import Markdown from "@/components/Markdown";
+import BackButton from "@/components/BackButton";
 import ViewBeacon from "@/components/ViewBeacon";
 import SiteSidebar from "@/components/SiteSidebar";
 import ShareButtons from "@/components/ShareButtons";
 import CommentSection from "@/components/CommentSection";
 import { formatDate, readingTime } from "@/lib/utils";
-import { ArrowLeft } from "lucide-react";
 
 // ISR: render sekali, sajikan dari cache, segarkan maks. tiap 60 detik
 export const revalidate = 60;
@@ -67,12 +67,7 @@ export default async function ArticlePage({ params }: Props) {
   return (
     <div className="container-x grid gap-12 pt-10 pb-16 lg:grid-cols-[minmax(0,1fr)_280px]">
     <article className="mx-auto w-full min-w-0 max-w-3xl lg:mx-0">
-      <Link
-        href="/"
-        className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-eyebrow text-muted transition-colors hover:text-accent"
-      >
-        <ArrowLeft className="h-3.5 w-3.5" /> Kembali
-      </Link>
+      <BackButton fallback="/" />
 
       <h1 className="mt-8 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
         {article.title}

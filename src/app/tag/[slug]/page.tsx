@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { getPublishedArticles } from "@/lib/queries";
 import ArticleCard from "@/components/ArticleCard";
+import BackButton from "@/components/BackButton";
 import EmptyState from "@/components/EmptyState";
-import { ArrowLeft, Tag as TagIcon } from "lucide-react";
+import { Tag as TagIcon } from "lucide-react";
 
 // ISR: render sekali, sajikan dari cache, segarkan maks. tiap 60 detik
 export const revalidate = 60;
@@ -26,12 +26,7 @@ export default async function TagPage({ params }: Props) {
 
   return (
     <div className="container-x pt-12 pb-16">
-      <Link
-        href="/"
-        className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-eyebrow text-muted transition-colors hover:text-accent"
-      >
-        <ArrowLeft className="h-3.5 w-3.5" /> Beranda
-      </Link>
+      <BackButton fallback="/" />
 
       <p className="eyebrow mt-8">Tag</p>
       <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">
