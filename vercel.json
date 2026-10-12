@@ -1,0 +1,3 @@
+{
+  "buildCommand": "node scripts/decode-icons.mjs && next build"
+}
